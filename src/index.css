@@ -9,87 +9,83 @@ All colors MUST be HSL.
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 215 25% 12%;
+    --foreground: 0 0% 9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 12%;
+    --card-foreground: 0 0% 9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 12%;
+    --popover-foreground: 0 0% 9%;
 
-    /* Teal/Cyan primary for trust and campus feel */
-    --primary: 188 86% 53%;
+    /* Black primary like Uber */
+    --primary: 0 0% 9%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 188 86% 45%;
+    --primary-hover: 0 0% 20%;
 
-    /* Light secondary for subtle backgrounds */
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 215 25% 12%;
+    /* Light secondary */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 15% 45%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    /* Amber accent for cost-savings emphasis */
-    --accent: 38 92% 50%;
+    /* Accent color for CTAs */
+    --accent: 142 86% 28%;
     --accent-foreground: 0 0% 100%;
-    --accent-hover: 38 92% 42%;
+    --accent-hover: 142 86% 22%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 188 86% 53%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 9%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Hero gradient */
-    --gradient-hero: linear-gradient(135deg, hsl(188 86% 53%) 0%, hsl(188 86% 65%) 100%);
-    
-    /* Subtle background gradient */
-    --gradient-bg: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
-
-    /* Card shadow for depth */
-    --shadow-card: 0 2px 8px -2px hsl(188 86% 53% / 0.1);
-    --shadow-card-hover: 0 8px 24px -4px hsl(188 86% 53% / 0.15);
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-card-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 
     /* Smooth transitions */
     --transition-base: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
-    --background: 215 25% 8%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 9%;
+    --foreground: 0 0% 98%;
 
-    --card: 215 25% 10%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 215 25% 10%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 188 86% 53%;
-    --primary-foreground: 0 0% 100%;
-    --primary-hover: 188 86% 60%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --primary-hover: 0 0% 80%;
 
-    --secondary: 215 25% 15%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 215 25% 15%;
-    --muted-foreground: 215 15% 60%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 38 92% 50%;
+    --accent: 142 86% 28%;
     --accent-foreground: 0 0% 100%;
-    --accent-hover: 38 92% 58%;
+    --accent-hover: 142 86% 35%;
 
     --destructive: 0 62% 50%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 215 25% 20%;
-    --input: 215 25% 20%;
-    --ring: 188 86% 53%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 98%;
 
-    --shadow-card: 0 2px 8px -2px hsl(0 0% 0% / 0.3);
-    --shadow-card-hover: 0 8px 24px -4px hsl(188 86% 53% / 0.2);
+    --shadow-card: 0 2px 8px -2px rgb(0 0 0 / 0.5);
+    --shadow-card-hover: 0 10px 15px -3px rgb(0 0 0 / 0.5);
   }
 }
 
@@ -109,20 +105,16 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  .gradient-hero {
-    background: var(--gradient-hero);
-  }
-
-  .gradient-bg {
-    background: var(--gradient-bg);
-  }
-
   .shadow-card {
     box-shadow: var(--shadow-card);
   }
 
   .shadow-card-hover {
     box-shadow: var(--shadow-card-hover);
+  }
+
+  .shadow-lg {
+    box-shadow: var(--shadow-lg);
   }
 
   .transition-base {
