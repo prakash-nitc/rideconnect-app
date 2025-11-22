@@ -23,6 +23,7 @@ const Navbar = () => {
     { to: '/', label: 'Home' },
     { to: '/rides', label: 'Rides' },
     { to: '/post-ride', label: 'Post Ride' },
+    { to: '/find-driver', label: 'Find Driver' },
     { to: '/my-rides', label: 'My Rides' },
     { to: '/about', label: 'About' },
   ];
