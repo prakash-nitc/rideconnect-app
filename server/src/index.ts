@@ -13,9 +13,9 @@ import seedRides from "../data/rides.json";
 dotenv.config();
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:5173";
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN ?? "http://localhost:5173";
 const JWT_SECRET = process.env.JWT_SECRET || "rideconnect-local-secret";
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI ?? "";
 
 if (!MONGODB_URI) {
   throw new Error("MONGODB_URI is required. Please set it in your environment variables.");
