@@ -1,73 +1,105 @@
-# Welcome to your Lovable project
+# RideConnect Campus Carpool
 
-## Project info
+A full-stack RideConnect experience for NIT Calicut students. The project is now split into a React client and a Node.js/Express backend so you can manage authentication, rides, and driver data from a single codebase.
 
-**URL**: https://lovable.dev/projects/87cfcbbf-129a-48f6-8257-2c43f662c9e6
+## Project Structure
 
-## How can I edit this code?
+```
+.
+├── client/   # Vite + React + TypeScript UI (Tailwind, shadcn/ui, React Query)
+└── server/   # Express + TypeScript API (JWT auth, JSON-file persistence)
+```
 
-There are several ways of editing your application.
+The API owns the source of truth for rides, driver profiles, and sign-ups. The UI consumes those endpoints via a lightweight fetch wrapper and React Query.
 
-**Use Lovable**
+## Prerequisites
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/87cfcbbf-129a-48f6-8257-2c43f662c9e6) and start prompting.
+- Node.js 18+ (install via [nvm](https://github.com/nvm-sh/nvm) or the official installers)
+- npm (ships with Node). You can swap npm for pnpm/yarn if you prefer—just regenerate the lockfiles inside each package.
 
-Changes made via Lovable will be committed automatically to this repo.
+## Environment Variables
 
-**Use your preferred IDE**
+### Client
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Create `client/.env` from the template:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+```
+cp client/.env.example client/.env
+```
 
-Follow these steps:
+`VITE_API_URL` should point at the backend API (defaults to `http://localhost:5000/api`).
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Server
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Create `server/.env` from the template:
 
-# Step 3: Install the necessary dependencies.
-npm i
+```
+cp server/.env.example server/.env
+```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+You can customize:
+
+- `PORT` – API port (default `5000`).
+- `CLIENT_ORIGIN` – allowed CORS origin for the React dev server.
+- `JWT_SECRET` – secret used to sign access tokens.
+- `MONGODB_URI` – MongoDB Atlas (or any MongoDB) connection string used by the API.
+
+## Installation & Local Development
+
+Install dependencies for each workspace once:
+
+```bash
+# Client dependencies
+cd client
+npm install
+
+# Server dependencies
+cd ../server
+npm install
+```
+
+Run both apps in separate terminals:
+
+```bash
+# Terminal 1 – backend (http://localhost:5000)
+cd server
+npm run dev
+
+# Terminal 2 – frontend (http://localhost:5173)
+cd client
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The client uses `VITE_API_URL` to talk to the API, so make sure the backend is running before testing forms such as “Post Ride” or “Join Ride”.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Production Builds
 
-**Use GitHub Codespaces**
+- Client: `cd client && npm run build && npm run preview`
+- Server: `cd server && npm run build && npm start`
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Backend Overview
 
-## What technologies are used for this project?
+- **Auth**: `/api/auth/signup`, `/api/auth/login`, `/api/auth/me` with JWT tokens + bcrypt hashes stored in MongoDB.
+- **Rides**: `/api/rides` (list), `POST /api/rides` (create, requires auth), `POST /api/rides/:rideId/join` (reserve a seat). Rides + participants live in MongoDB and are tied to the posting user.
+- **Drivers**: `GET /api/drivers` returns the curated driver list stored in MongoDB.
 
-This project is built with:
+On the first boot, the API seeds the MongoDB collections with the sample rides and drivers from `server/data/*.json` so you still get rich demo data. Delete the relevant documents if you’d like to re-seed.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Frontend Overview
 
-## How can I deploy this project?
+- React Router pages for Landing, Rides, Post Ride, Find Driver, My Rides, Auth, etc.
+- `@tanstack/react-query` keeps ride/driver data fresh and invalidates lists after mutations.
+- Auth context stores `{ user, token }` in `localStorage` and re-validates the token via `/api/auth/me` on load.
+- Pages that previously used mock data now read/write through the API:
+  - **Rides** fetches live data, filters client-side, and opens a modal to join seats.
+  - **Post Ride** requires an authenticated user and persists rides to the backend.
+  - **Find Driver** pulls verified driver profiles from the API and surfaces contact info.
+  - **My Rides** separates rides you host vs. rides you have joined using server data.
 
-Simply open [Lovable](https://lovable.dev/projects/87cfcbbf-129a-48f6-8257-2c43f662c9e6) and click on Share -> Publish.
+## Tips
 
-## Can I connect a custom domain to my Lovable project?
+- If you need to reset the backend state, delete the JSON files under `server/data` (they will be re-created with seed data on next boot).
+- Adjust `CLIENT_ORIGIN` and `VITE_API_URL` when deploying to ensure CORS and fetch URLs stay in sync.
+- The API currently stores sessions with JWTs only; no refresh tokens or cookies are set. Include the `Authorization: Bearer <token>` header for any protected route.
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Happy hacking! Let me know if you want deployment scripts (Docker, Railway, etc.) or automated tests next.
