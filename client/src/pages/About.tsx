@@ -173,14 +173,29 @@ const About = () => {
 
         {/* Vision */}
         <section className="mt-16">
-          <Card className="shadow-card gradient-hero text-primary-foreground">
-            <CardContent className="p-8 md:p-10 text-center">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">Our Vision</h2>
-              <p className="text-lg opacity-90 max-w-2xl mx-auto leading-relaxed">
-                To make campus mobility affordable, safe, and convenient for every NITC student. By building
-                trust and facilitating connections, we're not just sharing rides—we're building a stronger
-                campus community.
-              </p>
+          <Card className="shadow-card text-primary-foreground bg-gradient-to-r from-primary via-accent to-emerald-600 overflow-hidden">
+            <CardContent className="p-8 md:p-12 text-center space-y-6 relative">
+              <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top,_var(--accent)_0%,_transparent_45%)] pointer-events-none" />
+              <div className="relative space-y-4 max-w-3xl mx-auto">
+                <h2 className="text-2xl md:text-3xl font-bold">Our Vision</h2>
+                <p className="text-lg opacity-90 leading-relaxed">
+                  To make campus mobility affordable, safe, and convenient for every NITC student. By building
+                  trust and facilitating connections, we're not just sharing rides—we're building a stronger
+                  campus community.
+                </p>
+                <div className="grid md:grid-cols-3 gap-4 pt-4">
+                  {[
+                    { label: "Avg. savings per trip", value: "₹400+", accent: "bg-primary-foreground/20" },
+                    { label: "Verified riders", value: "500+", accent: "bg-primary-foreground/10" },
+                    { label: "Coordinated routes", value: "30+", accent: "bg-primary-foreground/20" },
+                  ].map((stat, index) => (
+                    <div key={index} className={`rounded-lg p-4 ${stat.accent} backdrop-blur-sm`}>
+                      <p className="text-sm uppercase tracking-wide opacity-80">{stat.label}</p>
+                      <p className="text-2xl font-bold">{stat.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </CardContent>
           </Card>
         </section>

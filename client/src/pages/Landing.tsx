@@ -133,7 +133,7 @@ const Landing = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-6">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-              NITC students waste ₹600+ on solo rides
+              Solo rides are costing NITC students a small fortune
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
               WhatsApp coordination is messy and unreliable. Messages get buried. 
@@ -312,7 +312,11 @@ const Landing = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="text-base h-12 px-8 border-2 border-primary-foreground/20 hover:bg-primary-foreground/10">
+              <Button
+                asChild
+                size="lg"
+                className="text-base h-12 px-8 bg-accent-foreground text-accent hover:bg-accent-foreground/90 shadow-lg shadow-black/20"
+              >
                 <Link to="/about">Learn more</Link>
               </Button>
             </div>
