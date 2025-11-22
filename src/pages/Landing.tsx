@@ -83,10 +83,10 @@ const Landing = () => {
             <div className="space-y-6 lg:space-y-8">
               <div className="space-y-4">
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight">
-                  Stop paying ₹600 alone
+                  Go anywhere with RideConnect
                 </h1>
                 <p className="text-xl md:text-2xl text-muted-foreground">
-                  Share rides with NITC students. Cut costs. Travel together.
+                  Your campus mobility partner. Share rides, split costs, and transform every journey into a shared experience.
                 </p>
               </div>
               
