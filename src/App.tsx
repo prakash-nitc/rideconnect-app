@@ -12,6 +12,7 @@ import PostRide from "./pages/PostRide";
 import About from "./pages/About";
 import MyRides from "./pages/MyRides";
 import Auth from "./pages/Auth";
+import FindDriver from "./pages/FindDriver";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/rides" element={<Rides />} />
                 <Route path="/post-ride" element={<PostRide />} />
+                <Route path="/find-driver" element={<FindDriver />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/my-rides" element={<MyRides />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
