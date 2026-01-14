@@ -13,6 +13,7 @@ import About from "./pages/About";
 import MyRides from "./pages/MyRides";
 import Auth from "./pages/Auth";
 import FindDriver from "./pages/FindDriver";
+import ForgotPassword from "./pages/ForgotPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/rides" element={<Rides />} />
                 <Route path="/post-ride" element={<PostRide />} />
                 <Route path="/find-driver" element={<FindDriver />} />

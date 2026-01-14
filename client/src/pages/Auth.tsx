@@ -13,6 +13,8 @@ export default function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [securityQuestion, setSecurityQuestion] = useState('');
+  const [securityAnswer, setSecurityAnswer] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login, signup } = useAuth();
   const navigate = useNavigate();
@@ -29,7 +31,7 @@ export default function Auth() {
           description: "You've successfully logged in.",
         });
       } else {
-        await signup(email, password, name);
+        await signup(email, password, name, securityQuestion, securityAnswer);
         toast({
           title: "Account created!",
           description: "Welcome to RideConnect.",
@@ -73,17 +75,41 @@ export default function Auth() {
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
               {!isLogin && (
-                <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="Aditya Gupta"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required={!isLogin}
-                  />
-                </div>
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      placeholder="Aditya Gupta"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required={!isLogin}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="securityQuestion">Security Question</Label>
+                    <Input
+                      id="securityQuestion"
+                      type="text"
+                      placeholder="e.g., What is your first pet's name?"
+                      value={securityQuestion}
+                      onChange={(e) => setSecurityQuestion(e.target.value)}
+                      required={!isLogin}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="securityAnswer">Security Answer</Label>
+                    <Input
+                      id="securityAnswer"
+                      type="text"
+                      placeholder="Your answer"
+                      value={securityAnswer}
+                      onChange={(e) => setSecurityAnswer(e.target.value)}
+                      required={!isLogin}
+                    />
+                  </div>
+                </>
               )}
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
@@ -107,6 +133,13 @@ export default function Auth() {
                   required
                 />
               </div>
+              {isLogin && (
+                <div className="flex justify-end">
+                  <a href="/forgot-password" className="text-sm text-primary hover:underline">
+                    Forgot password?
+                  </a>
+                </div>
+              )}
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
               <Button type="submit" className="w-full" disabled={isLoading}>

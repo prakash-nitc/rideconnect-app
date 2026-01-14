@@ -71,6 +71,8 @@ const userSchema = new Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, lowercase: true, unique: true },
     passwordHash: { type: String, required: true },
+    securityQuestion: { type: String, required: true },
+    securityAnswerHash: { type: String, required: true },
   },
   { timestamps: true },
 );
@@ -85,7 +87,10 @@ const DriverModel = mongoose.model<DriverDocument>("Driver", driverSchema);
 
 const app = express();
 
-app.use(cors({ origin: CLIENT_ORIGIN, credentials: true }));
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(express.json());
 app.use(morgan("dev"));
 
@@ -149,6 +154,8 @@ const signupSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(6),
+  securityQuestion: z.string().min(5),
+  securityAnswer: z.string().min(2),
 });
 
 const loginSchema = z.object({
@@ -176,7 +183,7 @@ app.post("/api/auth/signup", async (req, res) => {
     return res.status(400).json({ message: "Invalid payload", errors: parsed.error.flatten() });
   }
 
-  const { name, email, password } = parsed.data;
+  const { name, email, password, securityQuestion, securityAnswer } = parsed.data;
   const normalizedEmail = email.toLowerCase();
   const existing = await UserModel.findOne({ email: normalizedEmail });
   if (existing) {
@@ -184,10 +191,13 @@ app.post("/api/auth/signup", async (req, res) => {
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
+  const securityAnswerHash = await bcrypt.hash(securityAnswer.toLowerCase(), 10);
   const newUser = await UserModel.create({
     name,
     email: normalizedEmail,
     passwordHash,
+    securityQuestion,
+    securityAnswerHash,
   });
 
   const token = jwt.sign({ userId: newUser._id.toString() }, JWT_SECRET, { expiresIn: "7d" });
@@ -213,6 +223,46 @@ app.post("/api/auth/login", async (req, res) => {
 
   const token = jwt.sign({ userId: user._id.toString() }, JWT_SECRET, { expiresIn: "7d" });
   return res.json({ user: toPublicUser(user), token });
+});
+
+app.get("/api/auth/security-question/:email", async (req, res) => {
+  const { email } = req.params;
+  const user = await UserModel.findOne({ email: email.toLowerCase() });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  // For older users without a security question, handle gracefully or return error
+  if (!user.securityQuestion) {
+    return res.status(400).json({ message: "No security question set for this account" });
+  }
+  res.json({ question: user.securityQuestion });
+});
+
+app.post("/api/auth/reset-password", async (req, res) => {
+  const { email, securityAnswer, newPassword } = req.body;
+  if (!email || !securityAnswer || !newPassword) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  const user = await UserModel.findOne({ email: email.toLowerCase() });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  if (!user.securityAnswerHash) {
+    return res.status(400).json({ message: "Security answer not set" });
+  }
+
+  const isValid = await bcrypt.compare(securityAnswer.toLowerCase(), user.securityAnswerHash);
+  if (!isValid) {
+    return res.status(401).json({ message: "Incorrect security answer" });
+  }
+
+  const passwordHash = await bcrypt.hash(newPassword, 10);
+  user.passwordHash = passwordHash;
+  await user.save();
+
+  res.json({ message: "Password reset successfully" });
 });
 
 app.get("/api/auth/me", authMiddleware, (req: AuthRequest, res) => {
@@ -329,6 +379,8 @@ async function seedInitialData() {
           name: ride.postedBy,
           email: emailSlug,
           passwordHash: seedPasswordHash,
+          securityQuestion: "What is your pet's name?",
+          securityAnswerHash: await bcrypt.hash("fluffy", 10),
         });
       }
 
@@ -355,9 +407,25 @@ async function startServer() {
   try {
     await mongoose.connect(MONGODB_URI);
     await seedInitialData();
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(`RideConnect API listening on port ${PORT}`);
     });
+
+    const gracefulShutdown = () => {
+      console.log('Received kill signal, shutting down gracefully');
+      server.close(() => {
+        console.log('Closed out remaining connections');
+        process.exit(0);
+      });
+
+      setTimeout(() => {
+        console.error('Could not close connections in time, forcefully shutting down');
+        process.exit(1);
+      }, 10000);
+    };
+
+    process.on('SIGTERM', gracefulShutdown);
+    process.on('SIGINT', gracefulShutdown);
   } catch (error) {
     console.error("Failed to start server:", error);
     process.exit(1);

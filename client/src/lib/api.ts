@@ -40,7 +40,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}, token?: s
 }
 
 export const api = {
-  async signup(payload: { name: string; email: string; password: string }) {
+  async signup(payload: { name: string; email: string; password: string; securityQuestion: string; securityAnswer: string }) {
     return request<AuthResponse>("/auth/signup", { method: "POST", body: JSON.stringify(payload) });
   },
   async login(payload: { email: string; password: string }) {
@@ -68,6 +68,12 @@ export const api = {
   },
   async fetchDrivers() {
     return request<Driver[]>("/drivers");
+  },
+  async getSecurityQuestion(email: string) {
+    return request<{ question: string }>(`/auth/security-question/${email}`);
+  },
+  async resetPassword(payload: { email: string; securityAnswer: string; newPassword: string }) {
+    return request<{ message: string }>("/auth/reset-password", { method: "POST", body: JSON.stringify(payload) });
   },
 };
 

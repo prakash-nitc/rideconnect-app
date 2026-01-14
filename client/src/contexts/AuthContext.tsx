@@ -5,7 +5,7 @@ interface AuthContextType {
   user: AuthUser | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, name: string) => Promise<void>;
+  signup: (email: string, password: string, name: string, securityQuestion: string, securityAnswer: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
 }
@@ -74,8 +74,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signup = useCallback(
-    async (email: string, password: string, name: string) => {
-      const response = await api.signup({ email, password, name });
+    async (email: string, password: string, name: string, securityQuestion: string, securityAnswer: string) => {
+      const response = await api.signup({ email, password, name, securityQuestion, securityAnswer });
       persistSession(response.user, response.token);
     },
     [persistSession],
